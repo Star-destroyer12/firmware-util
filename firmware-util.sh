@@ -1,8 +1,10 @@
 #!/bin/bash
 
-# Resolve the directory where the script is located
+# Base URL for downloading raw scripts from GitHub repository
+script_url="https://raw.githubusercontent.com/Star-destroyer12/firmware-util/main/"
+
+# Ensure we're using bash and fix path resolution with realpath
 script_dir="$(dirname "$(realpath "$0")")"
-script_url="https://raw.githubusercontent.com/MrChromebox/scripts/main/"
 export LC_ALL=C
 
 # Check for ChromeOS and adjust paths accordingly
@@ -25,28 +27,33 @@ else
     export CURL="curl"
 fi
 
-# If this is not a git repository, download necessary files
+# If this is not a git repository, download necessary files from the new URL
 if [ ! -d "$script_dir/.git" ]; then
     script_dir="."
 
     echo -e "\nDownloading supporting files..."
-    rm -rf firmware.sh >/dev/null 2>&1
+    rm -rf firmware-util.sh >/dev/null 2>&1
     rm -rf functions.sh >/dev/null 2>&1
     rm -rf sources.sh >/dev/null 2>&1
-    $CURL -sLO ${script_url}firmware.sh
+
+    # Download files from the raw GitHub repository URLs
+    $CURL -sLO ${script_url}firmware-util.sh
     rc0=$?
     $CURL -sLO ${script_url}functions.sh
     rc1=$?
     $CURL -sLO ${script_url}sources.sh
     rc2=$?
+
+    # Check if any of the downloads failed
     if [[ $rc0 -ne 0 || $rc1 -ne 0 || $rc2 -ne 0 ]]; then
         echo -e "Error downloading one or more required files; cannot continue"
         exit 1
     fi
 fi
 
+# Source the downloaded scripts
 source $script_dir/sources.sh
-source $script_dir/firmware.sh
+source $script_dir/firmware-util.sh
 source $script_dir/functions.sh
 
 cd /tmp
