@@ -1,12 +1,8 @@
+#!/bin/bash
 
 script_dir="$(dirname $(readlink -f $0))"
-
-
 script_url="https://raw.githubusercontent.com/MrChromebox/scripts/main/"
-
-
 export LC_ALL=C
-
 
 if grep -q "Chrom" /etc/lsb-release ; then
     # needed for ChromeOS/ChromiumOS v82+
@@ -16,11 +12,10 @@ else
     cd /tmp
 fi
 
-
 printf "\ec"
 echo -e "\nMrChromebox Firmware Utility Script starting up"
 
-#check for cmd line param, expired CrOS certs
+# Check for cmd line param or expired CrOS certs
 if ! curl -sLo /dev/null https://mrchromebox.tech/index.html || [[ "$1" = "-k" ]]; then
     export CURL="curl -k"
 else
@@ -29,7 +24,6 @@ fi
 
 if [ ! -d "$script_dir/.git" ]; then
     script_dir="."
-
 
     echo -e "\nDownloading supporting files..."
     rm -rf firmware.sh >/dev/null 2>&1
@@ -51,13 +45,10 @@ source $script_dir/sources.sh
 source $script_dir/firmware.sh
 source $script_dir/functions.sh
 
-
 cd /tmp
-
 
 prelim_setup
 prelim_setup_result="$?"
-
 
 diagnostic_report_save
 troubleshooting_msg=(
@@ -71,9 +62,7 @@ if [ "$prelim_setup_result" -ne 0 ]; then
     exit 1
 fi
 
-
-
-trap 'check_unsupported' EXIT
+# Define function before using in trap
 function check_unsupported() {
     if [ "$isUnsupported" = true ]; then
         IFS=$'\n'
@@ -81,5 +70,7 @@ function check_unsupported() {
         echo "${troubleshooting_msg[*]}" > /dev/stderr
     fi
 }
+
+trap 'check_unsupported' EXIT
 
 menu_fwupdate
