@@ -20,13 +20,6 @@ fi
 printf "\ec"
 echo -e "\nMrChromebox Firmware Utility Script starting up"
 
-# Check for command line parameters or expired CrOS certs
-if ! curl -sLo /dev/null https://mrchromebox.tech/index.html || [[ "$1" = "-k" ]]; then
-    export CURL="curl -k"
-else
-    export CURL="curl"
-fi
-
 # If this is not a git repository, download necessary files from the new URL
 if [ ! -d "$script_dir/.git" ]; then
     script_dir="."
@@ -37,11 +30,11 @@ if [ ! -d "$script_dir/.git" ]; then
     rm -rf sources.sh >/dev/null 2>&1
 
     # Download files from the raw GitHub repository URLs
-    $CURL -sLO ${script_url}firmware-util.sh
+    curl -sLO ${script_url}firmware-util.sh
     rc0=$?
-    $CURL -sLO ${script_url}functions.sh
+    curl -sLO ${script_url}functions.sh
     rc1=$?
-    $CURL -sLO ${script_url}sources.sh
+    curl -sLO ${script_url}sources.sh
     rc2=$?
 
     # Check if any of the downloads failed
@@ -70,20 +63,4 @@ troubleshooting_msg=(
 )
 if [ "$prelim_setup_result" -ne 0 ]; then
     IFS=$'\n'
-    echo "MrChromebox Firmware Utility setup was unsuccessful" > /dev/stderr
-    echo "${troubleshooting_msg[*]}" > /dev/stderr
-    exit 1
-fi
-
-# Define function before using in trap
-function check_unsupported() {
-    if [ "$isUnsupported" = true ]; then
-        IFS=$'\n'
-        echo "MrChromebox Firmware Utility didn't recognize your device" > /dev/stderr
-        echo "${troubleshooting_msg[*]}" > /dev/stderr
-    fi
-}
-
-trap 'check_unsupported' EXIT
-
-menu_fwupdate
+    echo "MrChromebox Firmware Utility
