@@ -5,7 +5,7 @@ script_url="https://raw.githubusercontent.com/MrChromebox/scripts/main/"
 export LC_ALL=C
 
 if grep -q "Chrom" /etc/lsb-release ; then
-    # needed for ChromeOS/ChromiumOS v82+
+    # needed for ChromeOS/ChromiumOS v82
     mkdir -p /usr/local/bin
     cd /usr/local/bin
 else
