@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Ensure we're using bash and fix path resolution with realpath
-script_dir="$(dirname $(realpath "$0"))"
+# Resolve the directory where the script is located
+script_dir="$(dirname "$(realpath "$0")")"
 script_url="https://raw.githubusercontent.com/MrChromebox/scripts/main/"
 export LC_ALL=C
 
-# Check if we're on ChromeOS and adjust paths accordingly
+# Check for ChromeOS and adjust paths accordingly
 if grep -q "Chrom" /etc/lsb-release ; then
     # Needed for ChromeOS/ChromiumOS v82+
     mkdir -p /usr/local/bin
