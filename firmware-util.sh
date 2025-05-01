@@ -1,27 +1,31 @@
 #!/bin/bash
 
-script_dir="$(dirname $(readlink -f $0))"
+# Ensure we're using bash and fix path resolution with realpath
+script_dir="$(dirname $(realpath "$0"))"
 script_url="https://raw.githubusercontent.com/MrChromebox/scripts/main/"
 export LC_ALL=C
 
+# Check if we're on ChromeOS and adjust paths accordingly
 if grep -q "Chrom" /etc/lsb-release ; then
-    # needed for ChromeOS/ChromiumOS v82
+    # Needed for ChromeOS/ChromiumOS v82+
     mkdir -p /usr/local/bin
     cd /usr/local/bin
 else
     cd /tmp
 fi
 
+# Reset terminal and print a startup message
 printf "\ec"
 echo -e "\nMrChromebox Firmware Utility Script starting up"
 
-# Check for cmd line param or expired CrOS certs
+# Check for command line parameters or expired CrOS certs
 if ! curl -sLo /dev/null https://mrchromebox.tech/index.html || [[ "$1" = "-k" ]]; then
     export CURL="curl -k"
 else
     export CURL="curl"
 fi
 
+# If this is not a git repository, download necessary files
 if [ ! -d "$script_dir/.git" ]; then
     script_dir="."
 
@@ -47,12 +51,14 @@ source $script_dir/functions.sh
 
 cd /tmp
 
+# Perform preliminary setup
 prelim_setup
 prelim_setup_result="$?"
 
+# Save diagnostic report
 diagnostic_report_save
 troubleshooting_msg=(
-    " * diagnosics report has been saved to /tmp/mrchromebox_diag.txt"
+    " * diagnostics report has been saved to /tmp/mrchromebox_diag.txt"
     " * go to https://forum.chrultrabook.com/ for help"
 )
 if [ "$prelim_setup_result" -ne 0 ]; then
