@@ -29,7 +29,7 @@ if [ ! -d "$script_dir/.git" ]; then
     rm -rf functions.sh >/dev/null 2>&1
     rm -rf sources.sh >/dev/null 2>&1
 
-    # Download files from the raw GitHub repository URLs
+    # Download files from the raw GitHub repository URLs (ensure these are raw URLs)
     curl -sLO ${script_url}firmware-util.sh
     rc0=$?
     curl -sLO ${script_url}functions.sh
@@ -63,4 +63,20 @@ troubleshooting_msg=(
 )
 if [ "$prelim_setup_result" -ne 0 ]; then
     IFS=$'\n'
-    echo "MrChromebox Firmware Utility
+    echo "MrChromebox Firmware Utility setup was unsuccessful" > /dev/stderr
+    echo "${troubleshooting_msg[*]}" > /dev/stderr
+    exit 1
+fi
+
+# Define function before using in trap
+function check_unsupported() {
+    if [ "$isUnsupported" = true ]; then
+        IFS=$'\n'
+        echo "MrChromebox Firmware Utility didn't recognize your device" > /dev/stderr
+        echo "${troubleshooting_msg[*]}" > /dev/stderr
+    fi
+}
+
+trap 'check_unsupported' EXIT
+
+menu_fwupdate
