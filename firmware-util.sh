@@ -18,7 +18,7 @@ fi
 
 # Reset terminal and print a startup message
 printf "\ec"
-echo -e "\nMrChromebox Firmware Utility Script starting up"
+echo -e "\nStars Firmware Utility Script starting up"
 
 # If this is not a git repository, download necessary files from the new URL
 if [ ! -d "$script_dir/.git" ]; then
@@ -63,7 +63,7 @@ troubleshooting_msg=(
 )
 if [ "$prelim_setup_result" -ne 0 ]; then
     IFS=$'\n'
-    echo "MrChromebox Firmware Utility setup was unsuccessful" > /dev/stderr
+    echo "Star Firmware Utility setup was unsuccessful" > /dev/stderr
     echo "${troubleshooting_msg[*]}" > /dev/stderr
     exit 1
 fi
@@ -72,7 +72,7 @@ fi
 function check_unsupported() {
     if [ "$isUnsupported" = true ]; then
         IFS=$'\n'
-        echo "MrChromebox Firmware Utility didn't recognize your device" > /dev/stderr
+        echo "Star Firmware Utility didn't recognize your device" > /dev/stderr
         echo "${troubleshooting_msg[*]}" > /dev/stderr
     fi
 }
